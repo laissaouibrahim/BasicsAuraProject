@@ -9,21 +9,26 @@
       }, true);
     // If we pass error checking, do some real work
     if (validExpense) {
-      // Create the new camping
+      // Create the new expense
       let newCamping = component.get("v.newItem");
-      let theCampings = component.get("v.items");
       console.log("Create camping: " + JSON.stringify(newCamping));
-      console.log("Campings before 'create': " + JSON.stringify(theCampings));
-      theCampings.push(newCamping);
-      component.set("v.items", theCampings);
-      console.log("Campings after 'create': " + JSON.stringify(theCampings));
-      component.set("v.newItem", {
-        sobjectType: "Camping_Item__c",
-        Name: "",
-        Quantity__c: 0,
-        Price__c: 0,
-        Packed__c: false,
-      });
+      helper.createItem(component, newCamping);
     }
+  },
+  // Load expenses from Salesforce
+  doInit: function (component, event, helper) {
+    // Create the action
+    let action = component.get("c.getItems");
+    // Add callback behavior for when response is received
+    action.setCallback(this, function (response) {
+      let state = response.getState();
+      if (state === "SUCCESS") {
+        component.set("v.items", response.getReturnValue());
+      } else {
+        console.log("Failed with state: " + state);
+      }
+    });
+    // Send action off to be executed
+    $A.enqueueAction(action);
   },
 });
