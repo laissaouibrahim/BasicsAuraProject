@@ -1,4 +1,5 @@
-<aura:component >
-    <c:campingHeader/>
-    <c:campingList/>
+<aura:component>
+  <aura:attribute name="items" type="Camping_Item__c[]" />
+  <c:campingHeader />
+  <c:campingList items="{!v.items}" />
 </aura:component>
